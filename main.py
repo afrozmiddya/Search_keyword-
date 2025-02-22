@@ -1,4 +1,5 @@
 import concurrent.futures
+import os
 
 def highlight_keyword(line, keyword):
     """
@@ -34,8 +35,12 @@ def search_keywords_in_text(text, keywords):
             keyword_matches[keyword] = matches
     return keyword_matches
 
-def search_with_timeout(file_path, keywords, timeout):
+def search_with_timeout(file_name, keywords, timeout):
     try:
+        # Get the full path to the file in the same directory as the script
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        file_path = os.path.join(script_dir, file_name)
+        
         with open(file_path, 'r') as file:
             text = file.read()
         
@@ -48,15 +53,15 @@ def search_with_timeout(file_path, keywords, timeout):
                 print(f"Search timed out after {timeout} seconds.")
                 return {}
     except FileNotFoundError:
-        print(f"File not found: {file_path}")
+        print(f"File not found: {file_name}")
         return {}
 
 # Example usage
-file_path = r'C:\Users\afroz middya\OneDrive\Desktop\Coding\text found\afroz.txt'  # Use raw string
+file_name = 'afroz.txt'  # Only the file name (file must be in the same directory as the script)
 keywords = ['Afroz']     # Keyword to search for
 timeout = 5              # Time limit in seconds
 
-keyword_matches = search_with_timeout(file_path, keywords, timeout)
+keyword_matches = search_with_timeout(file_name, keywords, timeout)
 if keyword_matches:
     for keyword, matches in keyword_matches.items():
         print(f"Keyword '{keyword}' found in the following lines:")
